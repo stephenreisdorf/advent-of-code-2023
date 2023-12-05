@@ -4,25 +4,25 @@ struct Card
     my_numbers::Vector{String}
 end
 
-function parse_card(s)
+function parse_card(s::String)
     i = parse(Int, split(split(s, ":")[1])[end])
     winning_numbers = string.(split(split(split(s, ":")[2], " | ")[1]))
     my_numbers = string.(split(split(split(s, ":")[2], " | ")[2]))
     return Card(i, winning_numbers, my_numbers)
 end
 
-function determine_winners(c)
+function determine_winners(c::Card)
     return length(intersect(c.winning_numbers, c.my_numbers))
 end
 
-function score_card(c)
+function score_card(c::Card)
     winners = determine_winners(c)
     return winners == 0 ? 0 : 2^(winners-1)
 end
 
 using Memoization
 
-@memoize function score_card2(c)
+@memoize function score_card2(c::Card)
     winners = determine_winners(c)
     copies = cards[c.i+1:c.i+winners]
     if length(copies) == 0
@@ -44,4 +44,6 @@ input = readlines(open("src/inputs/day4.txt"))
 cards = parse_card.(input)
 
 sum(score_card.(cards))
-sum(score_card2.(cards))
+
+using BenchmarkTools
+@btime sum(score_card2.(cards))
