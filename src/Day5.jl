@@ -47,7 +47,7 @@ function determine_function(input_split)
 end
 
 input = read(open("src/samples/day5.txt"), String)
-# input = read(open("src/inputs/day5.txt"), String)
+input = read(open("src/inputs/day5.txt"), String)
 
 input_split = split(input, "\n\n")
 
