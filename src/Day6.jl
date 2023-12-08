@@ -28,7 +28,7 @@ input = string.(split("""Time:      7  15   30
 Distance:  9  40  200""", "\n"))
 
 races = parse_races(input)
-prod(map(x->number_of_ways(x[1], x[2]), sample_races))
+prod(map(x->number_of_ways(x[1], x[2]), races))
 
 time, record = parse_input2(input)
 f = distance_fn(time)
