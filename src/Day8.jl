@@ -11,17 +11,18 @@ function parse_map_element(i)
     return Dict((x, "L") => y[1], (x, "R") => y[2])
 end
 
-function run_directions(directions, m)
+function run_directions(directions, m, start_l, end_ls)
     f(l, d) = reduce(merge, parse_map_element.(m))[(l, d)]
-    l = "AAA"
+    l = start_l
     i = 0
-    while l != "ZZZ"
+    while !(l in end_ls)
         di = (i % length(directions)) + 1
         d = string(directions[di])
         i += 1
         l = f(l, d)
     end
-    print("Got to $l in $(i)")
+    println("Got from $start_l to $l in $(i)")
+    return i
 end
 
 input = """RL
@@ -35,11 +36,11 @@ GGG = (GGG, GGG)
 ZZZ = (ZZZ, ZZZ)"""
 
 directions, m = parse_input(input)
-run_directions(directions, m)
+run_directions(directions, m, "AAA", ["ZZZ"])
 
 input = join(readlines(open("src/inputs/day8.txt")), "\n")
 directions, m = parse_input(input)
-run_directions(directions, m)
+run_directions(directions, m, "AAA", ["ZZZ"])
 
 input = """LR
 
@@ -56,13 +57,6 @@ directions, m = parse_input(input)
 m2 = reduce(merge, parse_map_element.(m))
 starts = filter(x->x[end] == 'A', map(x->x[1][1], collect(m2)))
 ends = filter(x->x[end] == 'Z', map(x->x[1][1], collect(m2)))
-f(l, d) = reduce(merge, parse_map_element.(m))[(l, d)]
-l = starts
-i = 0
-while !all(map(x->x[end] == 'Z', l))
-    di = (i % length(directions)) + 1
-    d = string(directions[di])
-    i += 1
-    l = map(x->f(x, d), l)
-end
-print("Got to $l in $(i)")
+
+run_directions(directions, m, starts[1], ends)
+lcm(map(x->run_directions(directions, m, x, ends), starts))
